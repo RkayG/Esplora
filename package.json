@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "chartjs-plugin-zoom": "^2.0.1",
+    "moment": "^2.30.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  },
+  "scripts": {
+    "watch": "tailwindcss -i ./public/styles/global.css -o ./public/styles/style.css --watch",
+    "build": "tailwindcss -i ./public/styles/global.css -o ./public/styles/style.css"
+  }
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocks</title>
+    <link href="./styles/style.css" rel="stylesheet">
+    <link href="./styles/global.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- bootstrap for loading spinner -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="../src/scripts/fetchEthInfo.js?v=3" type="module"></script>
+    </head>
+    <body>
+    
+
+        <div class="h-8 bg-gray-900 w-full flex">
+            <p class="text-white text-xs mr-2 ml-4 mt-2">ETH: </p>
+               <p id="ethPrice" class="text-xs text-white mt-2"></p>
+       </div>
+      
+       <nav class="bg-gray-800 pt-3 pl-4 h-16">
+           <div class="container mx-auto flex justify-between items-center">
+               <!-- Logo or brand -->
+               <div class="flex-shrink-0">
+                   <a href="index.html" class="text-white font-bold text-xl absolute top-12 left-4">Esplora</a>
+               </div>
+   
+               
+               <!-- Navigation links -->
+               <div class="hidden lg:flex justify-end items-center flex-grow margin-10">
+                   <a href="index.html" class="text-white px-4 py-2 link">Overview</a>
+                   <span class="group px-4 py-2">
+                        <a href="#" class="group link group-hover:text-gray-400 text-gray-400">Blockchain    <i class="fas fas fa-caret-down ml-1 pl-1"></i></a>
+                        <ul class="absolute -mt-2 -ml-2 bg-white border border-gray-200 rounded-md shadow-lg hidden group-hover:block">
+                            <li><a href="blocks.html" class="block px-4 py-2 text-sm text-blue-800 hover:bg-gray-200">Blocks</a></li>
+                            <li><a href="transactions.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200">Transactions</a></li>
+                        </ul>
+                    </span>
+                   <a href="#" class="text-white px-4 py-2 link hover:text-gray-400">Top Holders</a>
+                   <a href="#" class="text-white px-4 py-2 link hover:text-gray-400">Holder Assets</a>
+               </div>
+               
+               <!-- Hamburger menu for mobile -->
+               <div class="lg:hidden">
+                   <button class="text-white focus:outline-none">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                       </svg>
+                   </button>
+               </div>
+           </div>
+       </nav>
+   
+       <h3 class="pl-4 pt-2 font-semibold">Blocks</h3>
+       <h5 class="pl-4 pt-1 text-xs italic">Showing 50 Blocks</h3>
+          
+
+        <div class="container mx-auto py-8">
+            <div class="overflow-x-auto w-11/12 m-auto">
+                <table class="table-auto w-full bg-white shadow-md rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-xs text-center">
+                            <th class="px-4 py-2">Block</th>
+                            <th class="px-4 py-2">Timestamp</th>
+                            <th class="px-4 py-2">Transactions</th>
+                            <th class="px-4 py-2">Miner</th>
+                            <th class="px-4 py-2">Gas Used</th>
+                            <th class="px-4 py-2">Gas Limit</th>
+                            <th class="px-4 py-2">Base Fee</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blockTableBody" class="text-center">
+                        <!-- Dynamic rows will be populated here -->
+                        <!-- Example row -->
+                        <!-- <tr>
+                            <td class="px-4 py-2">Block Number 1</td>
+                            <td class="px-4 py-2">Timestamp 1</td>
+                            <td class="px-4 py-2">Transactions 1</td>
+                            <td class="px-4 py-2">Miner 1</td>
+                            ...
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="loading-spinner" style="display: none;">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>   
+
+
+
+
+        <script> 
+
+            const blocksList = document.getElementById('blockTableBody');
+            const loadingSpinner = document.getElementById('loading-spinner');
+
+
+            async function fetchLatestBlocks() {
+                try {
+                    // Show loading indicator 
+                    loadingSpinner.style.display = 'block';
+
+                    const response = await fetch('http://localhost:3000/latest-blocks?count=50');
+                    const latestBlocks = await response.json();
+
+                    loadingSpinner.style.display = 'none';
+
+                    // console.log(latestBlocks);
+                    return latestBlocks;
+                } catch (error) {
+                    console.error('Error fetching latest blocks:', error);
+                    // hide loading indicator 
+                    loadingSpinner.style.display = 'none';
+                    return null;
+                }
+            }
+
+            async function displayLatestBlocks(blocks) {
+                if (!blocks) {
+                    console.error('Invalid block data');
+                    return;
+                }
+
+                for (const key in blocks) {
+                    if (blocks.hasOwnProperty(key)) {
+                        const block = blocks[key];
+                        const row = document.createElement('tr');
+                        // console.log(block.baseFeePerGas.hex);
+
+                          // Assuming gasUsed, gasLimit, and baseFee are hexadecimal strings
+                        const gasUsedDecimal = block.gasUsed.hex ? parseInt(block.gasUsed.hex, 16).toLocaleString() : 0; // Handle potential absence
+                        const gasLimitDecimal = block.gasLimit.hex ? parseInt(block.gasLimit.hex, 16).toLocaleString() : 0; // Handle potential absence
+                        const baseFeeDecimal = block.baseFeePerGas.hex ? parseInt(block.baseFeePerGas.hex, 16).toLocaleString() : 0; // Handle potential absence
+
+
+                        row.innerHTML = `
+                            <td class=" py-3 text-xs text-center">${block.number}</td>
+                            <td class="py-3 text-xs text-center">
+                                ${typeof calculateTimeDifference(block.timestamp) === 'object'
+                                ? `${calculateTimeDifference(block.timestamp).minutes}m 
+                                    ${calculateTimeDifference(block.timestamp).seconds}s ago`
+                                : `${calculateTimeDifference(block.timestamp)}s ago`}
+                            </td>
+                            <td class="px-4 py-3 text-xs text-center text-blue-600 cursor-pointer
+                             hover:text-blue-800 hover:font-semibold">${block.transactions.length} txns</td>
+                            <td class="py-3 text-xs text-center">${block.miner}</td>
+                            <td class=" py-3 text-xs text-center">${gasUsedDecimal}</td>
+                            <td class="py-3 text-xs text-center">${gasLimitDecimal}</td> 
+                            <td class="py-3 text-xs text-center">${baseFeeDecimal}</td> 
+                        `;
+
+                        blocksList.appendChild(row);
+                     }
+                 }
+            }
+
+            window.onload = async function() {
+                const latestBlocks = await fetchLatestBlocks();
+                displayLatestBlocks(latestBlocks);
+            };
+
+
+            /** UTILITYY FUNCTION, CALCULATES THE DIFFERENCE BETWEEN BLOCK TIMESTAMP AND CURRENT TIMESTAMP
+             * IN SECONDS
+             */
+             function calculateTimeDifference(timestamp) {
+                const currentTimestamp = Date.now(); // Get current timestamp in milliseconds
+                const difference = currentTimestamp - (timestamp * 1000); // Calculate difference in milliseconds
+
+                // Convert to seconds and ensure a non-negative value
+                const seconds = Math.floor(Math.max(0, difference / 1000));
+
+                // Calculate minutes if seconds exceed 59
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+
+                // Return an object with minutes and remaining seconds (or just seconds if < 60)
+                return minutes > 0 ? { minutes, seconds: remainingSeconds } : seconds;
+                
+
+            }
+            
+        </script>
+    </body>

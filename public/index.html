@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Explorer</title>
+    <link href="./styles/style.css" rel="stylesheet">
+    <link href="./styles/global.css" rel="stylesheet">
+
+     <!-- Font Awesome Icons -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+
+
+    </head>
+<body class="bg-white">
+   <div class="h-8 bg-gray-900 w-full flex">
+         <p class="text-white text-xs mr-2 ml-4 mt-2">ETH: </p>
+            <p id="ethPrice" class="text-xs text-white mt-2"></p>
+    </div>
+   
+    <nav class="bg-gray-800 pt-3 pl-4 h-16">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Logo or brand -->
+            <div class="flex-shrink-0">
+                <a href="#" class="text-white font-bold text-xl absolute top-12 left-4">Esplora</a>
+            </div>
+  
+            
+            <!-- Navigation links -->
+            <div class="hidden lg:flex justify-end items-center flex-grow margin-10">
+                <a href="index.html" class="text-gray-400 px-4 py-2 link hover:text-gray-400">Overview</a>
+                <span class="group px-4 py-2">
+                    <a href="#" class="group text-white link group-hover:text-gray-400">Blockchain <i class="fas fas fa-caret-down ml-1 pl-1"></i></a>
+                    <ul class="absolute -mt-2 -ml-2 bg-white border border-gray-200 rounded-md shadow-lg hidden group-hover:block">
+                        <li><a href="blocks.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200">Blocks</a></li>
+                        <li><a href="transactions.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200">Transactions</a></li>
+                    </ul>
+                </span>
+                <a href="#" class="text-white px-4 py-2 link hover:text-gray-400">Top Holders</a>
+                <a href="#" class="text-white px-4 py-2 link hover:text-gray-400">Holder Assets</a>
+            </div>
+            
+            <!-- Hamburger menu for mobile -->
+            <div class="lg:hidden">
+                <button class="text-white focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container h-55 w-4/5 bgMinor rounded-2xl m-auto pt-4 mt-10">
+        <h2 class="text-4xl text-white font-bold mt-6 mb-4 mx-10 pb-8">Esplora: Ethereum Block Explorer</h2>
+        <input type="text" class="h-12 w-4/5 bg-white text-gray-700 rounded-md mb-10 mx-10 px-5" 
+        placeholder="Search by address / txn hash / block / token...">
+    </div>
+
+    <!-- -->
+    <div class="grid-cols-2 grid gap-8 md:grid-cols-3 lg:grid-cols-4 mt-8 pad">
+        <div class="h-28 bg-gray-600 rounded-md flex flex-col items-center
+        ">
+            <i class="fas fa-cube text-xl text-white mt-6 mb-2"></i>
+            <p class="text-center text-xs text-gray-400">Total blocks</p>
+            <p id="totalBlock" class="text-white text-center"></p>
+        </div>
+ 
+        <div class="h-28 bg-gray-600 rounded-md flex flex-col items-center
+       ">
+            <i class="fas fa-clock text-xl text-white mt-6 mb-2"></i>
+            <p class="text-center text-xs text-gray-400">Average block time</p>
+            <p id="averageBlockTime" class="text-white text-center"></p>
+        </div>
+
+        <div class="h-28 bg-gray-600 rounded-md flex flex-col items-center
+         ">
+            <i class="fas fas fas fa-globe text-xl text-white mt-6 mb-2"></i>
+            <p class="text-center text-xs text-gray-400">Marketcap</p>
+             <p id="ethMarketcap" class="text-white text-center"></p>
+        </div>
+
+        <div class="h-28  bg-gray-600 rounded-md flex flex-col items-center
+      ">
+            <i class="fas fas fa-compress-arrows-alt text-xl text-white mt-6 mb-2"></i>
+            <p class="text-center text-xs text-gray-400">Total transactions</p>
+             <p id="totalTransactions" class="text-white text-center"></p>       
+        </div>
+    </div>
+
+    <!-- ETHEREUM CHART SECTION -->
+    <div class="container mx-auto mt-4 w-2/3 mb-8">
+        <h1 class="text-center text-2xl font-bold mb-4">Ethereum Price Chart</h1>
+        <div class="flex justify-center mb-4">
+          <button class="btn btn-primary mr-2" id="24-hours">24 Hours</button>
+          <button class="btn btn-outline" id="7-days">7 Days</button>
+          <button class="btn btn-outline" id="1-month">1 Month</button>
+          <button class="btn btn-outline" id="1-year">1 Year</button>
+        </div>
+        <canvas id="ethChart" width="700" height="400"></canvas>
+        <div class="navigator"></div>
+    </div>
+
+    <!-- LATEST BLOCKS SECTION -->
+    <div class="container mx-auto py-8 w-4/5">
+        <h2 class="pl-2 lg:text-2xl font-semibold mb-4">Latest Blocks</h2>
+        <div class=" overflow-x-auto">
+            <table class="table-auto w-full bg-white shadow-md rounded-lg">
+                <thead>
+                    <tr class="bg-gray-200 text-center text-xs">
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2">Block</th>
+                        <th class="px-4 py-2">Age</th>
+                        <th class="px-4 py-2">Transactions</th>
+                        <th class="px-4 py-2">Miner</th>
+                    </tr>
+                </thead>
+                <tbody id="blockTableBody" class="text-center">
+                    <!-- Dynamic rows will be populated here -->
+                    <!-- Example row -->
+                    <!-- <tr>
+                        <td class="px-4 py-2">Block Number 1</td>
+                        <td class="px-4 py-2">Timestamp 1</td>
+                        <td class="px-4 py-2">Transactions 1</td>
+                        <td class="px-4 py-2">Miner 1</td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <a href="blocks.html" class="text-sm text-gray-400 -mt-3 flex justify-center text-center
+    hover:text-blue-800 cursor-pointer uppercase w-fit m-auto">View more</a>
+
+     <!-- LATEST TANSACTIONS SECTION -->
+     <div class="container mx-auto py-8 w-4/5">
+        <h2 class="pl-2 lg:text-2xl font-semibold mb-4">Latest Transactions</h2>
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full bg-white shadow-md rounded-lg">
+                <thead>
+                    <tr class="bg-gray-200 text-center text-xs">
+                        <th class="px-4 py-2">Txn Hash</th>
+                        <th class="px-4 py-2">Method</th>
+                        <th class="px-4 py-2">From</th>
+                        <th class="px-4 py-2">To</th>
+                        <th class="px-4 py-2">Amount</th>
+                        <th class="px-4 py-2">Age</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTableBody" class="text-center">
+                    <!-- Dynamic rows will be populated here -->
+                    <!-- Example row -->
+                    <!-- <tr>
+                        <td class="px-4 py-2">Block Number 1</td>
+                        <td class="px-4 py-2">Timestamp 1</td>
+                        <td class="px-4 py-2">Transactions 1</td>
+                        <td class="px-4 py-2">Miner 1</td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+        <a href="transactions.html" class="text-sm text-gray-400 mt-5 flex justify-center text-center
+    hover:text-blue-800 cursor-pointer uppercase w-fit m-auto">View more</a>
+
+
+
+    <!-- scripts -->
+    <script src="../src/scripts/fetchEthInfo.js?v=3" type="module"></script>
+    <script src="../src/scripts/blocks.js?v=2" type="module"></script>
+    <script src="../src/scripts/Latest_blocks.js?v=2" type="module"></script>
+    <script src="../src/scripts/Latest_transactions.js" type="module"></script>
+
+    <!-- Ethereum Chart -->
+    <script src="../src/scripts/ethChart.js?v=1" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js-plugin-zoom"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/2.1.1/chartjs-adapter-moment.min.js"></script>
+
+
+    
+</body>
+</html>

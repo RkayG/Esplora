@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.pad {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+.bgMinor {
+    background-image: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%);
+}
+.bgMain {
+  background-image: url('../images/6936002.jpg');
+}
+.margin-10 {
+    margin-right: 8%;
+
+}
+
+.navigator {
+    height: 20px;
+    background-color: #ddd;
+    position: relative; /* Allows positioning a highlight bar */
+  }
+  
+  .link::after, .link1 {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-grow: 1;
+    content: '';
+    width: auto;
+    transform: scaleX(0);
+    height: 5px;
+    margin-top: 17px;
+    background-color: white;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+  }
+  
+  .link:hover::after, .link1 {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Faint gray border */
+  }
+  
+  
+  .tableBg {
+    background-color: #fff5;
+    backdrop-filter: blur(7px);
+    box-shadow: 0 .4rem .8rem #0005;
+  }
+
+  #loading-spinner {
+    margin-left: 50%;
+  }
